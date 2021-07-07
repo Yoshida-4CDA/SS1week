@@ -15,6 +15,7 @@ MonoBehaviour:
   initBallCount: 70
   countdownTime: 3
   gameTime: 10
+  feverMaxValue: 50
   scorePoint: 300
   bombScorePoint: 500
   comboScorePoint: 50

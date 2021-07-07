@@ -14,6 +14,9 @@ public class ParamsSO : ScriptableObject
     [Header("制限時間")]
     public float gameTime;
 
+    [Header("フィーバーゲージの最大値")]
+    public float feverMaxValue;
+
     [Header("スコアの基礎点")]
     public int scorePoint;
 

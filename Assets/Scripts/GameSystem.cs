@@ -32,12 +32,19 @@ public class GameSystem : MonoBehaviour
     [Header("リスタートボタン")]
     [SerializeField] Button restartButton = default;
 
+    [Header("フィーバーゲージ")]
+    [SerializeField] Slider feverGauge = default;
+
     bool isDragging;            // ドラッグ中かどうかを判別する変数
     Ball currentDraggingBall;   // 現在ドラッグしているオブジェクトを判別する変数
     int score;                  // スコア
     bool isCountdown;           // カウントダウン中かどうかを判別する変数
     float gameTime;             // 制限時間
     bool isGameOver;            // ゲームが終了したかどうかを判別する変数
+    float minValue;             // フィーバーゲージの最小値
+    float maxValue;             // フィーバーゲージの最大値
+    float feverValue;           // フィーバーゲージの現在の値
+    bool isFever;               // フィーバータイム中かどうかを判別する変数
 
     void Start()
     {
@@ -58,6 +65,13 @@ public class GameSystem : MonoBehaviour
         // ゲームオーバー画面の初期化
         gameOverImage.gameObject.SetActive(false);
         restartButton.gameObject.SetActive(false);
+
+        // フィーバーゲージの初期化
+        minValue = feverGauge.minValue;
+        maxValue = ParamsSO.Entity.feverMaxValue;
+        feverValue = minValue;
+        feverGauge.value = feverValue;
+        feverGauge.maxValue = maxValue;
     }
 
     /// <summary>
@@ -68,6 +82,23 @@ public class GameSystem : MonoBehaviour
     {
         score += point;
         scoreText.text = score.ToString();
+    }
+
+    void AddFeverValue(float value)
+    {
+        feverValue += value;
+        feverGauge.value = feverValue;
+        if (feverValue >= maxValue)
+        {
+            feverValue = maxValue;
+            feverGauge.value = feverValue;
+            isFever = true;
+            if (isFever)
+            {
+                Debug.Log("フィーバータイム中");
+                // フィーバーゲージを自動的に減らす
+            }
+        }
     }
 
     void Update()
@@ -189,6 +220,7 @@ public class GameSystem : MonoBehaviour
             // スコア：4個 => 300+200=500、5個 => 300+450=750、6個 => 300+750=1050、・・・
             int scorePoint = ParamsSO.Entity.scorePoint + comboScore;
             AddScore(scorePoint);
+            AddFeverValue(removeCount);
             SpawnPointEffect(removeBalls[removeBalls.Count - 1].transform.position, scorePoint);
         }
         // 全てのremoveBallのサイズと色を元に戻す
@@ -259,6 +291,7 @@ public class GameSystem : MonoBehaviour
         // スコア：4個 => 500+200=700、5個 => 500+450=950、6個 => 500+750=1250、・・・
         int scorePoint = ParamsSO.Entity.bombScorePoint + comboScore;
         AddScore(scorePoint);
+        AddFeverValue(removeCount);
         SpawnPointEffect(bomb.transform.position, scorePoint);
     }
 
