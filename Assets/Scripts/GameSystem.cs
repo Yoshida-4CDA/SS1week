@@ -17,9 +17,27 @@ public class GameSystem : MonoBehaviour
     [Header("ポイントのエフェクト")]
     [SerializeField] GameObject pointEffectPrefab = default;
 
+    [Header("カウントダウンの背景")]
+    [SerializeField] Image countdownImage = default;
+
+    [Header("カウントダウンのテキスト")]
+    [SerializeField] Text countdownText = default;
+
+    [Header("制限時間のテキスト")]
+    [SerializeField] Text timerText = default;
+
+    [Header("ゲームオーバーの背景")]
+    [SerializeField] Image gameOverImage = default;
+
+    [Header("リスタートボタン")]
+    [SerializeField] Button restartButton = default;
+
     bool isDragging;            // ドラッグ中かどうかを判別する変数
     Ball currentDraggingBall;   // 現在ドラッグしているオブジェクトを判別する変数
     int score;                  // スコア
+    bool isCountdown;           // カウントダウン中かどうかを判別する変数
+    float gameTime;             // 制限時間
+    bool isGameOver;            // ゲームが終了したかどうかを判別する変数
 
     void Start()
     {
@@ -27,7 +45,19 @@ public class GameSystem : MonoBehaviour
         score = 0;
         AddScore(score);
 
+        // 制限時間の初期化
+        gameTime = ParamsSO.Entity.gameTime;
+        timerText.text = gameTime.ToString("f0");
+
+        // ballを生成
         StartCoroutine(ballGenerator.Spawns(ParamsSO.Entity.initBallCount));
+
+        // カウントダウン開始
+        StartCoroutine(CountDown());
+
+        // ゲームオーバー画面の初期化
+        gameOverImage.gameObject.SetActive(false);
+        restartButton.gameObject.SetActive(false);
     }
 
     /// <summary>
@@ -42,19 +72,36 @@ public class GameSystem : MonoBehaviour
 
     void Update()
     {
-        if (Input.GetMouseButtonDown(0))
+        StopCoroutine(CountDown());
+
+        if (!isCountdown && !isGameOver)
         {
-            // 左クリックを押し込んだ時
-            OnDragBegin();
-        }
-        else if (Input.GetMouseButtonUp(0))
-        {
-            // 左クリックを離したとき
-            OnDragEnd();
-        }
-        else if (isDragging)
-        {
-            OnDragging();
+            gameTime -= Time.deltaTime;
+            timerText.text = gameTime.ToString("f0");
+            if (gameTime <= 0)
+            {
+                gameTime = 0;
+                timerText.text = gameTime.ToString("f0");
+                isGameOver = true;
+                if (isGameOver)
+                {
+                    StartCoroutine(GameOver());
+                }
+            }
+            if (Input.GetMouseButtonDown(0))
+            {
+                // 左クリックを押し込んだ時
+                OnDragBegin();
+            }
+            else if (Input.GetMouseButtonUp(0))
+            {
+                // 左クリックを離したとき
+                OnDragEnd();
+            }
+            else if (isDragging)
+            {
+                OnDragging();
+            }
         }
     }
 
@@ -225,5 +272,44 @@ public class GameSystem : MonoBehaviour
         GameObject effectObj = Instantiate(pointEffectPrefab, position, Quaternion.identity);
         PointEffect pointEffect = effectObj.GetComponent<PointEffect>();
         pointEffect.Show(score);
+    }
+
+    /// <summary>
+    /// ゲーム開始前のカウントダウン
+    /// </summary>
+    /// <returns></returns>
+    IEnumerator CountDown()
+    {
+        isCountdown = true;
+        countdownImage.gameObject.SetActive(true);
+        countdownText.text = "";
+        yield return new WaitForSeconds(0.5f);
+
+        for (int i = ParamsSO.Entity.countdownTime; i > 0; i--)
+        {
+            countdownText.text = $"{i}";
+            yield return new WaitForSeconds(1f);
+        }
+        countdownText.text = "GO!";
+        yield return new WaitForSeconds(1f);
+
+        countdownImage.gameObject.SetActive(false);
+        isCountdown = false;
+    }
+
+    IEnumerator GameOver()
+    {
+        Debug.Log("ゲーム終了");
+        yield return new WaitForSeconds(1f);
+
+        gameOverImage.gameObject.SetActive(true);
+        yield return new WaitForSeconds(2f);
+
+        Debug.Log("ランキング画面表示");
+        naichilab.RankingLoader.Instance.SendScoreAndShowRanking(score);
+        yield return new WaitForSeconds(0.5f);
+
+        Debug.Log("リスタートボタン表示");
+        restartButton.gameObject.SetActive(true);
     }
 }

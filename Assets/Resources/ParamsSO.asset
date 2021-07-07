@@ -13,13 +13,15 @@ MonoBehaviour:
   m_Name: ParamsSO
   m_EditorClassIdentifier: 
   initBallCount: 70
+  countdownTime: 3
+  gameTime: 10
   scorePoint: 300
   bombScorePoint: 500
   comboScorePoint: 50
-  comboCount: 4
   ballDistance: 1.5
   ballScale: 1.4
   removeBallCount: 3
+  comboCount: 4
   destroyEffectTime: 0.2
   bombRate: 10
   bombScale: 1.2

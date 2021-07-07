@@ -8,6 +8,12 @@ public class ParamsSO : ScriptableObject
     [Header("初期のballの個数")]
     public int initBallCount;
 
+    [Header("ゲーム開始前のカウントダウン秒数")]
+    public int countdownTime;
+
+    [Header("制限時間")]
+    public float gameTime;
+
     [Header("スコアの基礎点")]
     public int scorePoint;
 
