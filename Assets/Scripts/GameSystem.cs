@@ -58,6 +58,8 @@ public class GameSystem : MonoBehaviour
 
     void Start()
     {
+        SoundManager.instance.PlayBGM(1);
+
         // スコアの初期化
         score = 0;
         AddScore(score);
@@ -119,6 +121,8 @@ public class GameSystem : MonoBehaviour
         feverGauge.value = feverValue;
         if (feverValue >= maxValue)
         {
+            SoundManager.instance.PlayBGM(2);
+            PointEffect.indexSE = 1;
             feverValue = maxValue;
             feverGauge.value = feverValue;
             feverText.color = Color.magenta;
@@ -143,6 +147,8 @@ public class GameSystem : MonoBehaviour
             feverGauge.value = feverValue;
             yield return new WaitForSeconds(1f);
         }
+        SoundManager.instance.PlayBGM(1);
+        PointEffect.indexSE = 0;
         feverValue = minValue;
         feverGauge.value = feverValue;
         feverText.color = Color.white;

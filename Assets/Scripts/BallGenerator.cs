@@ -48,6 +48,5 @@ public class BallGenerator : MonoBehaviour
             
             yield return new WaitForSeconds(0.04f);
         }
-        Debug.Log(ParamsSO.Entity.bombRate * gameSystem.feverBombRate);
     }
 }

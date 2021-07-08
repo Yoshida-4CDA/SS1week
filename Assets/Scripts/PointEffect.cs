@@ -8,6 +8,9 @@ public class PointEffect : MonoBehaviour
     [Header("スコアテキスト")]
     [SerializeField] Text scoreText = default;
 
+    [HideInInspector]
+    public static int indexSE;   // ならすSEの番号
+
     /// <summary>
     /// スコアに応じて表示を変更する
     /// </summary>
@@ -15,6 +18,7 @@ public class PointEffect : MonoBehaviour
     public void Show(int score)
     {
         scoreText.text = "+" + score.ToString();
+        SoundManager.instance.PlaySE(indexSE);
         StartCoroutine(MoveUp());
     }
 

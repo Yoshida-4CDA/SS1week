@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   initBallCount: 70
   countdownTime: 3
-  gameTime: 40
+  gameTime: 60
   feverMaxValue: 50
   scorePoint: 300
   bombScorePoint: 500
@@ -27,7 +27,7 @@ MonoBehaviour:
   timeBonusCount: 7
   timeBonus: 2
   destroyEffectTime: 0.2
-  bombRate: 2
-  feverBombRate: 5
+  bombRate: 5
+  feverBombRate: 2
   bombScale: 1.2
   bombRange: 1.5
