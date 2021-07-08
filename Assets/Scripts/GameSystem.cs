@@ -38,6 +38,9 @@ public class GameSystem : MonoBehaviour
     [Header("フィーバーゲージ")]
     [SerializeField] Slider feverGauge = default;
 
+    [Header("フィーバーゲージのテキスト")]
+    [SerializeField] Text feverText = default;
+
     bool isDragging;            // ドラッグ中かどうかを判別する変数
     Ball currentDraggingBall;   // 現在ドラッグしているオブジェクトを判別する変数
     int score;                  // スコア
@@ -48,6 +51,10 @@ public class GameSystem : MonoBehaviour
     float maxValue;             // フィーバーゲージの最大値
     float feverValue;           // フィーバーゲージの現在の値
     bool isFever;               // フィーバータイム中かどうかを判別する変数
+    int feverPoint = 1;         // フィーバータイム中のスコア倍率
+
+    [HideInInspector]
+    public int feverBombRate = 1;   // フィーバータイム中にbombが生成される確率
 
     void Start()
     {
@@ -75,6 +82,7 @@ public class GameSystem : MonoBehaviour
         feverValue = minValue;
         feverGauge.value = feverValue;
         feverGauge.maxValue = maxValue;
+        feverText.color = Color.white;
     }
 
     /// <summary>
@@ -97,21 +105,51 @@ public class GameSystem : MonoBehaviour
         timerText.text = gameTime.ToString("f0");
     }
 
+    /// <summary>
+    /// フィーバーゲージの加算と表示
+    /// </summary>
+    /// <param name="value"></param>
     void AddFeverValue(float value)
     {
+        if (isFever)
+        {
+            return;
+        }
         feverValue += value;
         feverGauge.value = feverValue;
         if (feverValue >= maxValue)
         {
             feverValue = maxValue;
             feverGauge.value = feverValue;
+            feverText.color = Color.magenta;
+            feverPoint = ParamsSO.Entity.feverScorePoint;
+            feverBombRate = ParamsSO.Entity.feverBombRate;
             isFever = true;
-            if (isFever)
-            {
-                Debug.Log("フィーバータイム中");
-                // フィーバーゲージを自動的に減らす
-            }
+
+            StartCoroutine(UpdateFeverValue());
         }
+    }
+
+    /// <summary>
+    /// フィーバーゲージを自動的に減らす
+    /// </summary>
+    /// <returns></returns>
+    IEnumerator UpdateFeverValue()
+    {
+        yield return new WaitForSeconds(1f);
+        while (feverValue > 0)
+        {
+            feverValue -= 5;
+            feverGauge.value = feverValue;
+            yield return new WaitForSeconds(1f);
+        }
+        feverValue = minValue;
+        feverGauge.value = feverValue;
+        feverText.color = Color.white;
+        feverPoint = 1;
+        feverBombRate = 1;
+
+        isFever = false;
     }
 
     void Update()
@@ -231,7 +269,7 @@ public class GameSystem : MonoBehaviour
                 }
             }
             // スコア：4個 => 300+200=500、5個 => 300+450=750、6個 => 300+750=1050、・・・
-            int scorePoint = ParamsSO.Entity.scorePoint + comboScore;
+            int scorePoint = (ParamsSO.Entity.scorePoint + comboScore) * feverPoint;
             AddScore(scorePoint);
             AddFeverValue(removeCount);
             SpawnPointEffect(removeBalls[removeBalls.Count - 1].transform.position, scorePoint);
@@ -310,7 +348,7 @@ public class GameSystem : MonoBehaviour
             }
         }
         // スコア：4個 => 500+200=700、5個 => 500+450=950、6個 => 500+750=1250、・・・
-        int scorePoint = ParamsSO.Entity.bombScorePoint + comboScore;
+        int scorePoint = ParamsSO.Entity.scorePoint + comboScore * feverPoint;
         AddScore(scorePoint);
         AddFeverValue(removeCount);
         SpawnPointEffect(bomb.transform.position, scorePoint);

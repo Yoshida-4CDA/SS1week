@@ -26,6 +26,9 @@ public class ParamsSO : ScriptableObject
     [Header("comboScoreのスコア倍率")]
     public int comboScorePoint;
 
+    [Header("フィーバータイム中のスコア倍率")]
+    public int feverScorePoint;
+
     [Header("ball間の判定距離")]
     public float ballDistance;
 
@@ -49,6 +52,9 @@ public class ParamsSO : ScriptableObject
 
     [Header("bombが生成される確率")]
     public int bombRate;
+
+    [Header("フィーバータイム中のbomb生成率の倍率")]
+    public int feverBombRate;
 
     [Header("bombの拡大率")]
     public float bombScale;

@@ -4,6 +4,9 @@ using UnityEngine;
 
 public class BallGenerator : MonoBehaviour
 {
+    [Header("GameSystem")]
+    [SerializeField] GameSystem gameSystem = default;
+
     [Header("生成するBallPrefab")]
     [SerializeField] GameObject ballPrefab = default;
 
@@ -28,7 +31,7 @@ public class BallGenerator : MonoBehaviour
             int ballID = Random.Range(0, ballSprites.Length);   // ballID => 0~4 : bomb => -1
 
             // もしbombなら ballID = -1
-            if (Random.Range(0, 100) < ParamsSO.Entity.bombRate)    // bombRateの割合でtrue => bombを生成
+            if (Random.Range(0, 100) < ParamsSO.Entity.bombRate * gameSystem.feverBombRate)    // bombRateの割合でtrue => bombを生成
             {
                 ballID = -1;
                 ball.GetComponent<SpriteRenderer>().sprite = bombSprite;
@@ -45,5 +48,6 @@ public class BallGenerator : MonoBehaviour
             
             yield return new WaitForSeconds(0.04f);
         }
+        Debug.Log(ParamsSO.Entity.bombRate * gameSystem.feverBombRate);
     }
 }
