@@ -383,7 +383,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &422983092
 RectTransform:
   m_ObjectHideFlags: 0
@@ -476,7 +476,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 393, y: 211}
+  m_AnchoredPosition: {x: 393, y: 220}
   m_SizeDelta: {x: 160, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &439452685
@@ -1479,6 +1479,8 @@ MonoBehaviour:
   removeBalls: []
   scoreText: {fileID: 1831096741}
   pointEffectPrefab: {fileID: 418578838765237358, guid: 8c4c67c7912a2214aa9a6f48a2aa21eb,
+    type: 3}
+  timeBonusEffectPrefab: {fileID: 8790285649045624622, guid: 2e68dc07164a7d041add96d3c1c2ba7c,
     type: 3}
   countdownImage: {fileID: 1011739321}
   countdownText: {fileID: 509372100}

@@ -17,6 +17,9 @@ public class GameSystem : MonoBehaviour
     [Header("ポイントのエフェクト")]
     [SerializeField] GameObject pointEffectPrefab = default;
 
+    [Header("タイムボーナスのエフェクト")]
+    [SerializeField] GameObject timeBonusEffectPrefab = default;
+
     [Header("カウントダウンの背景")]
     [SerializeField] Image countdownImage = default;
 
@@ -82,6 +85,16 @@ public class GameSystem : MonoBehaviour
     {
         score += point;
         scoreText.text = score.ToString();
+    }
+
+    /// <summary>
+    /// ボーナスタイムの加算と表示
+    /// </summary>
+    /// <param name="timeBonus"></param>
+    void AddTimeBonus(int timeBonus)
+    {
+        gameTime += timeBonus;
+        timerText.text = gameTime.ToString("f0");
     }
 
     void AddFeverValue(float value)
@@ -222,6 +235,14 @@ public class GameSystem : MonoBehaviour
             AddScore(scorePoint);
             AddFeverValue(removeCount);
             SpawnPointEffect(removeBalls[removeBalls.Count - 1].transform.position, scorePoint);
+
+            // removeCountが7個以上だったらtimeBonusを加算
+            if (removeCount >= ParamsSO.Entity.timeBonusCount)
+            {
+                int timeBonus = removeCount - ParamsSO.Entity.timeBonusCount + ParamsSO.Entity.timeBonus;
+                SpawnTimeBonusEffect(timeBonus);
+                AddTimeBonus(timeBonus);
+            }
         }
         // 全てのremoveBallのサイズと色を元に戻す
         for (int i = 0; i < removeCount; i++)
@@ -293,6 +314,11 @@ public class GameSystem : MonoBehaviour
         AddScore(scorePoint);
         AddFeverValue(removeCount);
         SpawnPointEffect(bomb.transform.position, scorePoint);
+
+        // タイムボーナス(3秒)追加
+        int timeBonus = ParamsSO.Entity.timeBonus;
+        SpawnTimeBonusEffect(timeBonus);
+        AddTimeBonus(timeBonus);
     }
 
     /// <summary>
@@ -305,6 +331,17 @@ public class GameSystem : MonoBehaviour
         GameObject effectObj = Instantiate(pointEffectPrefab, position, Quaternion.identity);
         PointEffect pointEffect = effectObj.GetComponent<PointEffect>();
         pointEffect.Show(score);
+    }
+
+    /// <summary>
+    /// タイムボーナスエフェクトを発生させる
+    /// </summary>
+    /// <param name="time">表示するタイムボーナス</param>
+    void SpawnTimeBonusEffect(int time)
+    {
+        GameObject effectObj = Instantiate(timeBonusEffectPrefab);
+        TimeBonusEffect timeBonusEffect = effectObj.GetComponent<TimeBonusEffect>();
+        timeBonusEffect.ShowTimeBonus(time);
     }
 
     /// <summary>

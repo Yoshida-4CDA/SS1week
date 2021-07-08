@@ -38,6 +38,12 @@ public class ParamsSO : ScriptableObject
     [Header("comboScoreの発生に必要な最低個数")]
     public int comboCount;
 
+    [Header("timeBonusの発生に必要な最低個数")]
+    public int timeBonusCount;
+
+    [Header("timeBonusの基礎値")]
+    public int timeBonus;
+
     [Header("爆破エフェクトが消えるまでの時間")]
     public float destroyEffectTime;
 
