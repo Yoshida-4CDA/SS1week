@@ -17,6 +17,9 @@ public class ParamsSO : ScriptableObject
     [Header("フィーバーゲージの最大値")]
     public float feverMaxValue;
 
+    [Header("フィーバーゲージの減少値")]
+    public float updateFeverValue;
+
     [Header("スコアの基礎点")]
     public int scorePoint;
 
@@ -28,6 +31,9 @@ public class ParamsSO : ScriptableObject
 
     [Header("フィーバータイム中のスコア倍率")]
     public int feverScorePoint;
+
+    [Header("フィーバータイム突入時のタイムボーナス")]
+    public int feverTimeBonus;
 
     [Header("ball間の判定距離")]
     public float ballDistance;

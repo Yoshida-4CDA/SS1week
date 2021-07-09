@@ -1631,6 +1631,8 @@ MonoBehaviour:
     type: 3}
   timeBonusEffectPrefab: {fileID: 8790285649045624622, guid: 2e68dc07164a7d041add96d3c1c2ba7c,
     type: 3}
+  feverTimeBonusEffectPrefab: {fileID: 3446851894439201695, guid: d3357c902aa29cd44b94eec7cb4e5e5c,
+    type: 3}
   countdownImage: {fileID: 1011739321}
   countdownText: {fileID: 509372100}
   timerText: {fileID: 439452685}

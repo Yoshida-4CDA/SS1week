@@ -15,11 +15,13 @@ MonoBehaviour:
   initBallCount: 70
   countdownTime: 3
   gameTime: 60
-  feverMaxValue: 50
+  feverMaxValue: 60
+  updateFeverValue: 5
   scorePoint: 300
   bombScorePoint: 500
   comboScorePoint: 50
   feverScorePoint: 3
+  feverTimeBonus: 5
   ballDistance: 1.5
   ballScale: 1.4
   removeBallCount: 3
@@ -27,7 +29,7 @@ MonoBehaviour:
   timeBonusCount: 7
   timeBonus: 2
   destroyEffectTime: 0.2
-  bombRate: 5
-  feverBombRate: 2
+  bombRate: 3
+  feverBombRate: 3
   bombScale: 1.2
   bombRange: 1.5

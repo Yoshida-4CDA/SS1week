@@ -4,6 +4,15 @@ using UnityEngine;
 
 public class SoundManager : MonoBehaviour
 {
+    public enum IndexSE
+    {
+        Countdown,
+        Gamestart,
+        Score,
+        Feverscore,
+        Gameover
+    }
+
     public static SoundManager instance;
 
     private void Awake()
@@ -27,8 +36,6 @@ public class SoundManager : MonoBehaviour
     [Header("BGMの素材")]
     public AudioClip[] audioClipBGM = default;
 
-    // public static int indexBGM;
-
     [Header("SEのスピーカー")]
     public AudioSource audioSourceSE = default;
 
@@ -40,9 +47,14 @@ public class SoundManager : MonoBehaviour
     /// </summary>
     public void PlayBGM(int index)
     {
-        audioSourceBGM.Stop();
+        StopBGM();
         audioSourceBGM.clip = audioClipBGM[index];
         audioSourceBGM.Play();
+    }
+
+    public void StopBGM()
+    {
+        audioSourceBGM.Stop();
     }
 
     /// <summary>
