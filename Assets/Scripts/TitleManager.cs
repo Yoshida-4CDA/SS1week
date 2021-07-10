@@ -10,6 +10,7 @@ public class TitleManager : MonoBehaviour
 
     void Start()
     {
+        SoundManager.instance.PlayBGM(0);
         // タイトルの文字の色を変更
         titleText.text =
             "<size=180>" +
