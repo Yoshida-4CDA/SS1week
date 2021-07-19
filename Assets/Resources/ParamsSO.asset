@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   initBallCount: 70
   countdownTime: 3
-  gameTime: 60
+  gameTime: 3
   feverMaxValue: 60
   updateFeverValue: 5
   scorePoint: 300

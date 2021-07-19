@@ -44,11 +44,14 @@ public class GameSystem : MonoBehaviour
     [Header("フィーバーゲージのテキスト")]
     [SerializeField] Text feverText = default;
 
-    [Header("音量調節のメニュー画面")]
-    [SerializeField] GameObject volumeSettingImage = default;
+    [Header("サウンドボタン")]
+    [SerializeField] GameObject soundButton = default;
 
-    [Header("BGMの音量調節バー")]
-    [SerializeField] Slider bgmSlider = default;
+    [Header("音量調節のメニュー画面")]
+    [SerializeField] GameObject soundSettingImage = default;
+
+    [Header("音量調節バー")]
+    [SerializeField] Slider bgmSlider, seSlider = default;
 
     bool isDragging;            // ドラッグ中かどうかを判別する変数
     Ball currentDraggingBall;   // 現在ドラッグしているオブジェクトを判別する変数
@@ -63,13 +66,16 @@ public class GameSystem : MonoBehaviour
     int feverPoint = 1;         // フィーバータイム中のスコア倍率
     bool isSetting;             // 音量調節画面を開いているかどうかを判別する変数
 
+    // コルーチンを変数に代入 => コルーチンの処理を途中で停止させるため
+    IEnumerator countDown;          
+    IEnumerator updateFeverValue;
+
     [HideInInspector]
     public int feverBombRate = 1;   // フィーバータイム中にbombが生成される確率
 
     void Start()
     {
         // BGMとSEの初期化
-        // SoundManager.instance.PlayBGM(1);
         PointEffect.indexSE = (int)SoundManager.IndexSE.Score;
 
         // スコアの初期化
@@ -84,7 +90,8 @@ public class GameSystem : MonoBehaviour
         StartCoroutine(ballGenerator.Spawns(ParamsSO.Entity.initBallCount));
 
         // カウントダウン開始
-        StartCoroutine(CountDown());
+        countDown = CountDown();
+        StartCoroutine(countDown);
 
         // ゲームオーバー画面の初期化
         isGameOver = false;
@@ -100,8 +107,13 @@ public class GameSystem : MonoBehaviour
         feverText.color = Color.white;
 
         // 音量調節画面の初期化
-        volumeSettingImage.SetActive(false);
+        soundSettingImage.SetActive(false);
+        
+        // 設定したBGM、SEの音量を各Sliderに反映
         bgmSlider.onValueChanged.AddListener(value => SoundManager.instance.audioSourceBGM.volume = value);
+        seSlider.onValueChanged.AddListener(value => SoundManager.instance.audioSourceSE.volume = value);
+        bgmSlider.value = SoundManager.instance.audioSourceBGM.volume;
+        seSlider.value = SoundManager.instance.audioSourceSE.volume;
     }
 
     /// <summary>
@@ -134,12 +146,16 @@ public class GameSystem : MonoBehaviour
         {
             return;
         }
+
         feverValue += value;
         feverGauge.value = feverValue;
+
+        // ゲージが満タンになったらフィーバータイムへ移行
         if (feverValue >= maxValue)
         {
             FeverMode();
-            StartCoroutine(UpdateFeverValue());
+            updateFeverValue = UpdateFeverValue();
+            StartCoroutine(updateFeverValue);
         }
     }
 
@@ -156,6 +172,7 @@ public class GameSystem : MonoBehaviour
             feverGauge.value = feverValue;
             yield return new WaitForSeconds(1f);
         }
+        // ゲージが空になったら各設定をデフォルトに戻す
         ReturnDefaultGameMode();
     }
 
@@ -168,6 +185,7 @@ public class GameSystem : MonoBehaviour
         {
             return;
         }
+
         SoundManager.instance.PlayBGM(2);
         PointEffect.indexSE = (int)SoundManager.IndexSE.Feverscore;
         AddTimeBonus(ParamsSO.Entity.feverTimeBonus);
@@ -189,6 +207,7 @@ public class GameSystem : MonoBehaviour
         {
             return;
         }
+
         SoundManager.instance.PlayBGM(1);
         PointEffect.indexSE = (int)SoundManager.IndexSE.Score;
         feverValue = minValue;
@@ -446,8 +465,9 @@ public class GameSystem : MonoBehaviour
     IEnumerator CountDown()
     {
         SoundManager.instance.StopBGM();
-        isCountdown = true;
 
+        // カウントダウン開始
+        isCountdown = true;
         countdownImage.gameObject.SetActive(true);
         countdownText.text = "";
         yield return new WaitForSeconds(0.5f);
@@ -464,8 +484,8 @@ public class GameSystem : MonoBehaviour
         SoundManager.instance.PlaySE((int)SoundManager.IndexSE.Gamestart);
         yield return new WaitForSeconds(1f);
 
+        // カウントダウン終了
         countdownImage.gameObject.SetActive(false);
-        
         isCountdown = false;
         SoundManager.instance.PlayBGM(1);
     }
@@ -477,34 +497,62 @@ public class GameSystem : MonoBehaviour
     IEnumerator GameOver()
     {
         isGameOver = true;
+        soundButton.SetActive(false);
         SoundManager.instance.StopBGM();
         SoundManager.instance.PlaySE((int)SoundManager.IndexSE.Gameover);
         
         yield return new WaitForSeconds(1.5f);
 
+        // ゲームオーバー画面の表示
         gameOverImage.gameObject.SetActive(true);
         SoundManager.instance.PlayBGM(3);
         yield return new WaitForSeconds(2f);
 
+        // ランキングボードの表示
         naichilab.RankingLoader.Instance.SendScoreAndShowRanking(score);
         yield return new WaitForSeconds(0.5f);
 
+        // リトライボタンの表示
         restartButton.gameObject.SetActive(true);
     }
 
     public void OnClickSoundButton()
     {
+        if (isGameOver)
+        {
+            return;
+        }
+
         isSetting = true;
-        volumeSettingImage.SetActive(true);
-        // Time.timeScale = 0;
-        Debug.Log(isSetting);
+        soundSettingImage.SetActive(true);
+
+        if (isCountdown)
+        {
+            StopCoroutine(countDown);
+        }
+        else if (isFever)
+        {
+            StopCoroutine(updateFeverValue);
+        }
     }
 
     public void OnClickExitButton()
     {
+        if (isGameOver)
+        {
+            return;
+        }
+
         isSetting = false;
-        volumeSettingImage.SetActive(false);
-        // Time.timeScale = 1f;
-        Debug.Log(isSetting);
+        soundSettingImage.SetActive(false);
+
+        if (isCountdown)
+        {
+            StartCoroutine(countDown);
+        }
+        else if (isFever)
+        {
+            StartCoroutine(updateFeverValue);
+        }
     }
 }
