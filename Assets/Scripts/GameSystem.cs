@@ -44,6 +44,12 @@ public class GameSystem : MonoBehaviour
     [Header("フィーバーゲージのテキスト")]
     [SerializeField] Text feverText = default;
 
+    [Header("音量調節のメニュー画面")]
+    [SerializeField] GameObject volumeSettingImage = default;
+
+    [Header("BGMの音量調節バー")]
+    [SerializeField] Slider bgmSlider = default;
+
     bool isDragging;            // ドラッグ中かどうかを判別する変数
     Ball currentDraggingBall;   // 現在ドラッグしているオブジェクトを判別する変数
     int score;                  // スコア
@@ -55,6 +61,7 @@ public class GameSystem : MonoBehaviour
     float feverValue;           // フィーバーゲージの現在の値
     bool isFever;               // フィーバータイム中かどうかを判別する変数
     int feverPoint = 1;         // フィーバータイム中のスコア倍率
+    bool isSetting;             // 音量調節画面を開いているかどうかを判別する変数
 
     [HideInInspector]
     public int feverBombRate = 1;   // フィーバータイム中にbombが生成される確率
@@ -91,6 +98,10 @@ public class GameSystem : MonoBehaviour
         feverGauge.value = feverValue;
         feverGauge.maxValue = maxValue;
         feverText.color = Color.white;
+
+        // 音量調節画面の初期化
+        volumeSettingImage.SetActive(false);
+        bgmSlider.onValueChanged.AddListener(value => SoundManager.instance.audioSourceBGM.volume = value);
     }
 
     /// <summary>
@@ -190,7 +201,7 @@ public class GameSystem : MonoBehaviour
 
     void Update()
     {
-        if (isCountdown || isGameOver)
+        if (isCountdown || isGameOver || isSetting)
         {
             return;
         }
@@ -479,5 +490,21 @@ public class GameSystem : MonoBehaviour
         yield return new WaitForSeconds(0.5f);
 
         restartButton.gameObject.SetActive(true);
+    }
+
+    public void OnClickSoundButton()
+    {
+        isSetting = true;
+        volumeSettingImage.SetActive(true);
+        // Time.timeScale = 0;
+        Debug.Log(isSetting);
+    }
+
+    public void OnClickExitButton()
+    {
+        isSetting = false;
+        volumeSettingImage.SetActive(false);
+        // Time.timeScale = 1f;
+        Debug.Log(isSetting);
     }
 }
