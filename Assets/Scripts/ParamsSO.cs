@@ -17,9 +17,6 @@ public class ParamsSO : ScriptableObject
     [Header("フィーバーゲージの最大値")]
     public float feverMaxValue;
 
-    // [Header("フィーバーゲージの減少値")]
-    // public float updateFeverValue;
-
     [Header("スコアの基礎点")]
     public int scorePoint;
 
