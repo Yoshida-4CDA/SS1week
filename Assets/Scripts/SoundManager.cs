@@ -10,6 +10,8 @@ public class SoundManager : MonoBehaviour
         Gamestart,
         Score,
         Feverscore,
+        Dragbegin,
+        Bomb,
         Gameover
     }
 

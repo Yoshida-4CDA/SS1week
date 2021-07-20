@@ -14,15 +14,14 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   initBallCount: 70
   countdownTime: 3
-  gameTime: 3
-  feverMaxValue: 60
-  updateFeverValue: 5
-  scorePoint: 300
-  bombScorePoint: 500
+  gameTime: 45
+  feverMaxValue: 80
+  scorePoint: 500
+  bombScorePoint: 300
   comboScorePoint: 50
   feverScorePoint: 3
   feverTimeBonus: 5
-  ballDistance: 1.5
+  ballDistance: 1.85
   ballScale: 1.4
   removeBallCount: 3
   comboCount: 4
@@ -32,4 +31,4 @@ MonoBehaviour:
   bombRate: 3
   feverBombRate: 3
   bombScale: 1.2
-  bombRange: 1.5
+  bombRange: 1.7

@@ -153,8 +153,9 @@ MonoBehaviour:
   - {fileID: 8300000, guid: 1550c6e2efc70cd4c93afe77bc4b54b4, type: 3}
   - {fileID: 8300000, guid: f3186f92a2c3a4ad49ddf35bf71ed069, type: 3}
   - {fileID: 8300000, guid: ea4fcdf01197a91429588c102fbaff22, type: 3}
+  - {fileID: 8300000, guid: cf9638c13987cda41b911e6888d6657a, type: 3}
+  - {fileID: 8300000, guid: 3d5864718d8f3a145ae9381c9fbf4f70, type: 3}
   - {fileID: 8300000, guid: fc61ea4176eeafd4e9d9d8cec9306b01, type: 3}
-  bgmSlider: {fileID: 0}
 --- !u!82 &8653923915077385093
 AudioSource:
   m_ObjectHideFlags: 0

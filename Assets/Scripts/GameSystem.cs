@@ -168,9 +168,10 @@ public class GameSystem : MonoBehaviour
         yield return new WaitForSeconds(1f);
         while (feverValue > 0)
         {
-            feverValue -= ParamsSO.Entity.updateFeverValue;
+            // feverValue -= ParamsSO.Entity.updateFeverValue;
+            feverValue--;
             feverGauge.value = feverValue;
-            yield return new WaitForSeconds(1f);
+            yield return new WaitForSeconds(0.15f);
         }
         // ゲージが空になったら各設定をデフォルトに戻す
         ReturnDefaultGameMode();
@@ -332,7 +333,6 @@ public class GameSystem : MonoBehaviour
                     comboScore += i * ParamsSO.Entity.comboScorePoint;
                 }
             }
-            // スコア：4個 => 300+200=500、5個 => 300+450=750、6個 => 300+750=1050、・・・
             int scorePoint = (ParamsSO.Entity.scorePoint + comboScore) * feverPoint;
             AddScore(scorePoint);
             AddFeverValue(removeCount);
@@ -368,6 +368,7 @@ public class GameSystem : MonoBehaviour
             // ballのサイズを拡大、色を変更する
             ball.transform.localScale = Vector3.one * ParamsSO.Entity.ballScale;
             ball.GetComponent<SpriteRenderer>().color = Color.yellow;
+            SoundManager.instance.PlaySE((int)SoundManager.IndexSE.Dragbegin);
             removeBalls.Add(ball);
         }
     }
@@ -391,6 +392,10 @@ public class GameSystem : MonoBehaviour
                 explosionList.Add(ball);
             }
         }
+        // Bomb用のSEを設定する
+        int currentIndexSE = PointEffect.indexSE;
+        PointEffect.indexSE = (int)SoundManager.IndexSE.Bomb;
+
         // 爆破する
         int removeCount = explosionList.Count;
         int comboScore = 0;
@@ -411,16 +416,18 @@ public class GameSystem : MonoBehaviour
                 comboScore += i * ParamsSO.Entity.comboScorePoint;
             }
         }
-        // スコア：4個 => 500+200=700、5個 => 500+450=950、6個 => 500+750=1250、・・・
         int scorePoint = ParamsSO.Entity.scorePoint + comboScore * feverPoint;
         AddScore(scorePoint);
         AddFeverValue(removeCount);
         SpawnPointEffect(bomb.transform.position, scorePoint);
 
-        // タイムボーナス(3秒)追加
+        // タイムボーナス追加
         int timeBonus = ParamsSO.Entity.timeBonus;
         SpawnTimeBonusEffect(timeBonus);
         AddTimeBonus(timeBonus);
+
+        // SEを元に戻す
+        PointEffect.indexSE = currentIndexSE;
     }
 
     /// <summary>
